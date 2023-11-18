@@ -1,0 +1,1 @@
+DROP TABLE gotd_suggestion;

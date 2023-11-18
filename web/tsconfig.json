@@ -1,0 +1,10 @@
+{
+  "compilerOptions": {
+    "module": "ES2020",
+    "outDir": "build",
+    "jsx": "react-jsx",
+    "lib": ["ES2020", "DOM"],
+    "types": ["vite/client"],
+    "moduleResolution": "Bundler",
+  }
+}
