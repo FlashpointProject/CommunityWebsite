@@ -1,4 +1,4 @@
-import { Image, Popup } from 'semantic-ui-react';
+import { Image } from 'semantic-ui-react';
 import { User } from '../types';
 import { getUserRoleIcon } from '../utils/images';
 
