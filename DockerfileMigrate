@@ -1,3 +1,3 @@
 FROM migrate/migrate:latest
 
-COPY migrations /migrations
+COPY postgres_migrations /postgres_migrations
