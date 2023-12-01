@@ -18,18 +18,18 @@ type ContentReportSearchQuery struct {
 }
 
 type ContentReport struct {
-	ID           int64        `json:"id"`
-	ContentType  string       `json:"content_type"`
-	ContentID    string       `json:"content_id"`
-	ReportState  string       `json:"report_state"`
-	ReportedBy   *UserProfile `json:"reported_by"`
-	ReportReason string       `json:"report_reason"`
-	ReportedUser *UserProfile `json:"reported_user"`
-	ResolvedBy   *UserProfile `json:"resolved_by"`
-	ResolvedAt   *time.Time   `json:"resolved_at"`
-	ActionTaken  string       `json:"action_taken"`
-	CreatedAt    time.Time    `json:"created_at"`
-	UpdatedAt    time.Time    `json:"updated_at"`
+	ID                int64        `json:"id"`
+	ContentRef        string       `json:"content_ref"`
+	ReportState       string       `json:"report_state"`
+	ReportedBy        *UserProfile `json:"reported_by"`
+	ReportReason      string       `json:"report_reason"`
+	AdditionalContext string       `json:"additional_context"`
+	ReportedUser      *UserProfile `json:"reported_user"`
+	ResolvedBy        *UserProfile `json:"resolved_by"`
+	ResolvedAt        *time.Time   `json:"resolved_at"`
+	ActionTaken       string       `json:"action_taken"`
+	CreatedAt         time.Time    `json:"created_at"`
+	UpdatedAt         time.Time    `json:"updated_at"`
 }
 
 type ContentReportSearchResponse struct {
@@ -38,8 +38,7 @@ type ContentReportSearchResponse struct {
 }
 
 type SubmittedContentReport struct {
-	ContentType  string `json:"content_type"`
-	ContentID    string `json:"content_id"`
-	ReportReason string `json:"report_reason"`
-	ReportedUser string `json:"reported_user"` // @TODO not trust
+	ContentRef        string `json:"content_ref"`
+	ReportReason      string `json:"reason"`
+	AdditionalContext string `json:"context"`
 }

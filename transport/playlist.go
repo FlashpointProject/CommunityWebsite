@@ -464,12 +464,8 @@ func (a *App) SubmitContentReport(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// Validate fields
-	if subReport.ContentType == "" {
-		http.Error(w, "content_type is a required field", http.StatusBadRequest)
-		return
-	}
-	if subReport.ContentID == "" {
-		http.Error(w, "content_id is a required field", http.StatusBadRequest)
+	if subReport.ContentRef == "" {
+		http.Error(w, "content_ref is a required field", http.StatusBadRequest)
 		return
 	}
 	if subReport.ReportReason == "" {
@@ -477,15 +473,41 @@ func (a *App) SubmitContentReport(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	// Find referenced content
+	contentRefs, err := utils.ParseContentRef(subReport.ContentRef)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+
+	reportedUser := ""
+	switch contentRefs[0].ContentType {
+	case "playlist":
+		playlistId, err := strconv.Atoi(contentRefs[0].ContentID)
+		if err != nil {
+			writeError(ctx, w, perr("invalid playlist id", http.StatusBadRequest))
+			return
+		}
+		playlist, err := a.Service.GetPlaylist(ctx, int64(playlistId), a.Fpfss)
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
+		if playlist == nil {
+			writeError(ctx, w, perr("invalid playlist id", http.StatusBadRequest))
+			return
+		}
+		reportedUser = playlist.Author.UserID
+	}
+
 	report := &types.ContentReport{
-		ContentType:  subReport.ContentType,
-		ContentID:    subReport.ContentID,
+		ContentRef:   subReport.ContentRef,
 		ReportReason: subReport.ReportReason,
 		ReportedBy: &types.UserProfile{
 			UserID: uid,
 		},
 		ReportedUser: &types.UserProfile{
-			UserID: subReport.ReportedUser,
+			UserID: reportedUser,
 		},
 		ReportState: "reported",
 		ActionTaken: "",

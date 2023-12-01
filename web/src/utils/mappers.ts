@@ -42,8 +42,7 @@ export function mapRawNewsPost(data: RawNewsPost): NewsPost {
 export function mapRawContentReport(data: RawContentReport): ContentReport {
   return {
     id: data.id,
-    contentType: data.content_type,
-    contentId: data.content_id,
+    contentRef: data.content_ref,
     state: data.report_state,
     reportedUser: {
       id: data.reported_user.uid,
@@ -62,6 +61,7 @@ export function mapRawContentReport(data: RawContentReport): ContentReport {
       perms: [],
     },
     reportReason: data.report_reason,
+    context: data.context,
     resolvedAt: data.resolved_at,
     resolvedBy: data.resolved_by ? {
       id: data.resolved_by.uid,

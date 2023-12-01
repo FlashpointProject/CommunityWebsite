@@ -4,7 +4,6 @@ import { Button, Dimmer, Loader, Segment } from 'semantic-ui-react';
 import { Playlist } from '../../types';
 import { fetchPlaylist } from '../../utils/fetchers';
 import { BoxPlaylistInfo } from '../BoxPlaylistInfo';
-import { Comment } from '../Comment';
 import { GameListPlaylist } from '../GameList';
 import { SegmentWithHeader } from '../SegmentWithHeader';
 import { UserMini } from '../UserBanners';
@@ -13,6 +12,7 @@ import { RootState } from '../../store';
 import { UserPerm } from '../../utils/permissions';
 import { useConfirm } from '../../hooks/useConfirm';
 import { useSmartNavigate } from '../../hooks/useSmartNavigate';
+import { ReportButton } from '../ReportBox';
 
 export function PlaylistPage() {
   const { id } = useParams();
@@ -173,6 +173,12 @@ export function PlaylistFullBox(props: PlaylistFullBoxProps) {
                   </div>
                 </Segment>
               )}
+              <Segment>
+                <h4>Actions</h4>
+                <div className='button-container'>
+                  <ReportButton contentRef={'playlist_' + props.playlist.id} contentName={'Playlist - ' + props.playlist.name} withText/>
+                </div>
+              </Segment>
             </div>
           )}
           <BoxPlaylistInfo playlist={props.playlist} />

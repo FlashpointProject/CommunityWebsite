@@ -1,6 +1,7 @@
 package utils
 
 import (
+	"fmt"
 	"math/rand"
 	"strings"
 	"time"
@@ -12,6 +13,11 @@ const (
 	letterIdxMax  = 63 / letterIdxBits   // # of letter indices fitting in 63 bits
 	letterBytes   = "abcdefghijklmnopqrstuvwxyz0123456789"
 )
+
+type ContentRef struct {
+	ContentType string
+	ContentID   string
+}
 
 type RealRandomString struct {
 	src rand.Source
@@ -61,4 +67,23 @@ func RemoveSliceDuplicates(slice []string) []string {
 		}
 	}
 	return list
+}
+
+func ParseContentRef(raw string) ([]ContentRef, error) {
+	parts := strings.Split(raw, ":")
+	refs := make([]ContentRef, 0)
+	for _, part := range parts {
+		partSplit := strings.Split(part, "_")
+		if len(partSplit) != 2 {
+			return nil, fmt.Errorf("invalid content ref, invalid structure")
+		}
+		refs = append(refs, ContentRef{
+			ContentType: partSplit[0],
+			ContentID:   partSplit[1],
+		})
+	}
+	if len(refs) == 0 {
+		return nil, fmt.Errorf("invalid content ref, no refs found")
+	}
+	return refs, nil
 }

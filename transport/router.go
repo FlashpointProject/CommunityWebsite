@@ -109,7 +109,7 @@ func (a *App) ServeRouter(l *logrus.Entry, srv *http.Server, router *mux.Router)
 		http.HandlerFunc(a.RequestJSON(f))).
 		Methods("GET")
 
-	f = a.UserAuthMux(a.SubmitContentReport, isStaff)
+	f = a.UserAuthMux(a.SubmitContentReport)
 
 	router.Handle("/api/reports",
 		http.HandlerFunc(a.RequestJSON(f))).

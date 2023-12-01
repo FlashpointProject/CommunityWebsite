@@ -4,25 +4,40 @@ import { easyDateTimeFormat } from '../utils/misc';
 import { UserMini } from './UserBanners';
 import { renderReportState } from './pages/Moderation';
 import { useNavigate } from 'react-router-dom';
+import { useMemo } from 'react';
 
 export type ContentReportBoxProps = {
-  contentReport: ContentReport;
+  contentReport: ContentReport | null;
   onClose: () => void;
+};
+
+type ContentRef = {
+  type: string;
+  id: string;
 };
 
 export function ContentReportModal(props: ContentReportBoxProps) {
   const navigate = useNavigate();
 
+  const contentRefs = useMemo(() => {
+    if (props.contentReport && props.contentReport.contentRef) {
+      return parseContextRef(props.contentReport.contentRef);
+    } else {
+      return [];
+    }
+  }, [props.contentReport]);
+
   const visitContent = () => {
     if (props.contentReport === null) return;
 
-    switch (props.contentReport.contentType) {
-      case 'playlist': {
-        navigate(`/playlist/${props.contentReport.contentId}`);
-        break;
+    if (contentRefs.length === 1) {
+      switch (contentRefs[0].type) {
+        case 'playlist':
+          navigate(`/playlist/${contentRefs[0].id}`);
+          break;
+        default:
+          alert('Unknown content type');
       }
-      default:
-        alert('Not implemented');
     }
   };
 
@@ -55,8 +70,12 @@ export function ContentReportModal(props: ContentReportBoxProps) {
                       <p>{props.contentReport.reportReason}</p>
                     </GridColumn>
                     <GridColumn width={16}>
+                      <h3>Additional Context</h3>
+                      <p>{props.contentReport.context || 'None'}</p>
+                    </GridColumn>
+                    <GridColumn width={16}>
                       <h3>Reported Content Type</h3>
-                      <p>{props.contentReport.contentType}</p>
+                      <p>{props.contentReport.contentRef}</p>
                     </GridColumn>
                     <GridColumn width={16}>
                       <Button onClick={visitContent} size='big'>Visit Content</Button>
@@ -117,4 +136,12 @@ export function ContentReportModal(props: ContentReportBoxProps) {
       )}
     </Modal>
   );
+}
+
+function parseContextRef(ref: string): ContentRef[] {
+  const parts = ref.split(':');
+  return parts.map((part) => {
+    const [type, id] = part.split('_');
+    return { type, id };
+  });
 }

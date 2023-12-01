@@ -129,12 +129,12 @@ export enum DiscordRoleIds {
 
 export type RawContentReport = {
   id: string;
-  content_type: string;
-  content_id: string;
+  content_ref: string;
   report_state: string;
   reported_user: RawUser;
   reported_by: RawUser;
   report_reason: string;
+  context: string;
   resolved_at: string;
   resolved_by: RawUser;
   action_taken: string;
@@ -144,12 +144,12 @@ export type RawContentReport = {
 
 export type ContentReport = {
   id: string;
-  contentType: string;
-  contentId: string;
+  contentRef: string;
   state: string;
   reportedUser: User;
   reportedBy: User;
   reportReason: string;
+  context: string;
   resolvedAt: string;
   resolvedBy: User;
   actionTaken: string;

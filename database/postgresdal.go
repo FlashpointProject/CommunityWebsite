@@ -967,11 +967,11 @@ func (d *postgresDAL) SearchContentReports(dbs PGDBSession, query *types.Content
 
 	reports := make([]*types.ContentReport, 0)
 
-	builder := NewSqlBuilder(`SELECT id, content_type, content_id, report_state, reported_by,
-		report_reason, reported_user, resolved_by, resolved_at, action_taken, created_at, updated_at FROM content_report`)
+	builder := NewSqlBuilder(`SELECT id, content_ref, report_state, reported_by,
+		report_reason, context, reported_user, resolved_by, resolved_at, action_taken, created_at, updated_at FROM content_report`)
 
 	if query.ContentType != "" {
-		builder.Where("content_type=$1", query.ContentType)
+		builder.Where("content_ref ILIKE $1", "%"+query.ContentType+"%")
 	}
 	if query.ReportState != "" {
 		builder.Where("report_state=$1", query.ReportState)
@@ -1001,18 +1001,18 @@ func (d *postgresDAL) SearchContentReports(dbs PGDBSession, query *types.Content
 
 	for rows.Next() {
 		var id int64
-		var contentType string
-		var contentID string
+		var contentRef string
 		var reportState string
 		var reportedBy string
 		var reportReason string
+		var context string
 		var reportedUser string
 		var resolvedBy string
 		var resolvedAt sql.NullTime
 		var actionTaken string
 		var createdAt time.Time
 		var updatedAt time.Time
-		err := rows.Scan(&id, &contentType, &contentID, &reportState, &reportedBy, &reportReason, &reportedUser, &resolvedBy, &resolvedAt, &actionTaken, &createdAt, &updatedAt)
+		err := rows.Scan(&id, &contentRef, &reportState, &reportedBy, &reportReason, &context, &reportedUser, &resolvedBy, &resolvedAt, &actionTaken, &createdAt, &updatedAt)
 		if err != nil {
 			return nil, 0, err
 		}
@@ -1024,8 +1024,7 @@ func (d *postgresDAL) SearchContentReports(dbs PGDBSession, query *types.Content
 		}
 		reports = append(reports, &types.ContentReport{
 			ID:          id,
-			ContentType: contentType,
-			ContentID:   contentID,
+			ContentRef:  contentRef,
 			ReportState: reportState,
 			ReportedBy: &types.UserProfile{
 				UserID: reportedBy,
@@ -1140,8 +1139,8 @@ func (d *postgresDAL) SearchContentReports(dbs PGDBSession, query *types.Content
 
 func (d *postgresDAL) SaveContentReport(dbs PGDBSession, report *types.ContentReport) error {
 	var id int64
-	err := dbs.Tx().QueryRow(dbs.Ctx(), "INSERT INTO content_report (content_type, content_id, report_state, reported_by, report_reason, resolved_by, action_taken, reported_user, resolved_at, created_at, updated_at) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, NULL, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP) RETURNING id",
-		report.ContentType, report.ContentID, report.ReportState, report.ReportedBy.UserID, report.ReportReason, report.ResolvedBy.UserID, report.ActionTaken, report.ReportedUser.UserID).Scan(&id)
+	err := dbs.Tx().QueryRow(dbs.Ctx(), "INSERT INTO content_report (content_ref, report_state, reported_by, report_reason, context, resolved_by, action_taken, reported_user, resolved_at, created_at, updated_at) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, NULL, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP) RETURNING id",
+		report.ContentRef, report.ReportState, report.ReportedBy.UserID, report.ReportReason, report.AdditionalContext, report.ResolvedBy.UserID, report.ActionTaken, report.ReportedUser.UserID).Scan(&id)
 	if err != nil {
 		return err
 	}
