@@ -158,7 +158,22 @@ export type ContentReport = {
 };
 
 export const RolesWithIcon: string[] = [
-  DiscordRoleIds.Administrator
+  DiscordRoleIds['2021 Donator'],
+  // DiscordRoleIds.Donator,
+  DiscordRoleIds.Administrator,
+  DiscordRoleIds.Archivist,
+  DiscordRoleIds.Curator,
+  DiscordRoleIds.Developer,
+  // DiscordRoleIds.Editor
+  DiscordRoleIds.Hacker,
+  DiscordRoleIds.Helper,
+  DiscordRoleIds.Hunter,
+  DiscordRoleIds.Mechanic,
+  DiscordRoleIds.Moderator,
+  DiscordRoleIds.Tester,
+  DiscordRoleIds.Translator,
+  DiscordRoleIds['Trial Curator'],
+  DiscordRoleIds.VIP,
 ];
 
 export type FilterPlaylists = {

@@ -135,7 +135,7 @@ export function ReportModal({ trigger, contentRef, contentName }: ReportModalPro
 
 export function ReportButton({ withText, ...args }: ReportButtonProps) {
   const button = withText ? (
-    <Button icon='flag'>Report</Button>
+    <Button content={'Report'} icon='flag'/>
   ) : (
     <Button icon='flag'/>
   );
